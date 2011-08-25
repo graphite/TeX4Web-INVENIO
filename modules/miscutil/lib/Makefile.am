@@ -61,9 +61,7 @@ pylib_DATA = __init__.py \
              solrutils.py \
              remote_debugger.py \
              remote_debugger_config.py \
-             remote_debugger_wsgi_reload.py \
-             tex4web_core.py \
-             tex4web_sw.py
+             remote_debugger_wsgi_reload.py
 
 noinst_DATA = testimport.py \
               kwalitee.py \
