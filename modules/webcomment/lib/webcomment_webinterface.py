@@ -46,6 +46,8 @@ from invenio.config import \
      CFG_WEBCOMMENT_ALLOW_COMMENTS,\
      CFG_WEBCOMMENT_ALLOW_REVIEWS, \
      CFG_WEBCOMMENT_USE_MATHJAX_IN_COMMENTS, \
+     CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR, \
+     CFG_WEBCOMMENT_RICH_TEXT_EDITOR, \
      CFG_SITE_RECORD, \
      CFG_WEBCOMMENT_MAX_ATTACHMENT_SIZE, \
      CFG_WEBCOMMENT_MAX_ATTACHED_FILES
@@ -56,7 +58,8 @@ from invenio.search_engine import create_navtrail_links, \
      get_colID
 from invenio.urlutils import redirect_to_url, \
                              make_canonical_urlargd
-from invenio.htmlutils import get_mathjax_header
+from invenio.htmlutils import get_mathjax_header, \
+                              get_tex4web_header
 from invenio.errorlib import register_exception
 from invenio.messages import gettext_set_language
 from invenio.webinterface_handler import wash_urlargd, WebInterfaceDirectory
@@ -238,6 +241,9 @@ class WebInterfaceCommentsPages(WebInterfaceDirectory):
             mathjaxheader = ''
             if CFG_WEBCOMMENT_USE_MATHJAX_IN_COMMENTS:
                 mathjaxheader = get_mathjax_header()
+            tex4webheader = ''
+            if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
+                tex4webheader = get_tex4web_header()
             jqueryheader = '''
             <script src="%(CFG_SITE_URL)s/js/jquery.min.js" type="text/javascript" language="javascript"></script>
             <script src="%(CFG_SITE_URL)s/js/jquery.MultiFile.pack.js" type="text/javascript" language="javascript"></script>
@@ -248,7 +254,7 @@ class WebInterfaceCommentsPages(WebInterfaceDirectory):
                         navtrail=navtrail,
                         uid=uid,
                         verbose=1,
-                        metaheaderadd = mathjaxheader + jqueryheader,
+                        metaheaderadd = mathjaxheader + jqueryheader + tex4webheader,
                         req=req,
                         language=argd['ln'],
                         navmenuid='search',
