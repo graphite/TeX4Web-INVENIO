@@ -1,0 +1,313 @@
+/*------ markup editor ------*/
+
+.m-editor-block {
+    margin: 0.5em;
+}
+
+.m-editor-block-content {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #cccccc;
+}
+
+.m-editor-inner {
+  float: left;
+  padding-bottom: 5px;
+  width: 50%;
+}
+
+.m-editor-block-title {
+    width: 100%;
+    margin: 1em 0 0.2em 0;
+}
+
+.m-editor-block-options {
+    float: right;
+    margin: 0 0 0.2em 0;
+}
+
+#m-editor-resizer .ui-resizable-s {
+    background: #ffffff url(/tex4web/resizer_200.png) no-repeat scroll center 0;
+}
+
+.m-editor-block-resizer .ui-resizable-s {
+    bottom: -12px !important;
+}
+
+.m-editor-preview-content {
+    overflow: auto;
+}
+
+.m-editor-block-content {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.m-editor-block-resizer {
+    height: 400px;
+}
+
+.m-editor-block-title .typeset {
+    font-size: 77%;
+}
+
+.m-editor-editor-content textarea {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    background-color: #F4F4F9;
+}
+
+.m-editor-actions {
+    text-align: center;
+}
+
+.m-editor-actions input {
+    width: 15em;
+    margin: 1em;
+}
+
+.m-editor-files div {
+    margin: 0.7em;
+}
+
+/*------ tex4web buttons ------*/
+
+.text-button {
+    color: black;
+    padding: 0.1em 0.5em;
+}
+
+.text-button:hover {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-color: #B7D1ED !important;
+    text-decoration: none;
+}
+
+.text-button-selected {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-color: #5FA0E8 !important;
+}
+
+.text-button-selected:hover {m
+    background-color: #5FA0E8 !important;
+}
+
+/* Error message */
+span.t4w-error { background-color: lightyellow; color: red; border: 1px solid red; display: none; }
+div.t4w-error { display: inline-block; cursor: pointer; }
+img.t4w-error {
+  top: 7px;
+  position: relative;
+}
+
+/* Newlines */
+.t4w-par { margin-bottom: 1em; }
+.t4w-newline {}
+
+/* Math */
+.t4w-math {}
+.t4w-displaymath { width: 100%; text-align: center; }
+
+.t4w-equation { width: 100%; text-align: center; }
+.t4w-equation-number { width: 2em; }
+
+.t4w-eqnarray, .t4w-align { width: 100%; text-align: center; }
+.t4w-eqnarray-number, .t4w-align-number { width: 2em; }
+
+/* Fonts */
+.t4w-md { font-weight: medium; }
+.t4w-bf { font-weight: bold; }
+
+.t4w-rm { font-family: serif; }
+.t4w-sf { font-family: sans-serif, Arial, Helvetica; }
+.t4w-tt { font-family: monospace, "Courier New", Courier; }
+
+.t4w-up { /* TODO */ }
+.t4w-it { font-style: italic; }
+.t4w-sl { font-style: oblique; }
+.t4w-sc { font-variant: small-caps; }
+.t4w-em { font-style: italic; }
+.t4w-nf { font-style: normal; font-variant: normal; }
+
+/* Font sizes */
+.t4w-tiny       { font-size: xx-small; }
+.t4w-scriptsize     { font-size: x-small; }
+.t4w-footnotesize   { font-size: x-small; }
+.t4w-small      { font-size: small; }
+.t4w-normalsize { font-size: medium; }
+.t4w-large      { font-size: large; }
+.t4w-Large      { font-size: x-large; }
+.t4w-LARGE      { font-size: xx-large; }
+.t4w-huge       { font-size: xx-large; }
+.t4w-Huge       { font-size: xx-large; }
+
+/* Formatting */
+.t4w-mbox {}
+
+/* Sections */
+.t4w-section {}
+.t4w-subsection {}
+.t4w-subsubsection {}
+.t4w-section-number { margin-right: 0.8em; }
+
+/* Table and figure */
+.t4w-table, .t4w-figure { text-align: center; }
+.t4w-table-caption, .t4w-figure-caption {
+    text-align: justify; font-weight: bold;
+}
+
+/* Lists */
+.t4w-description { list-style-type: none; }
+.t4w-item-description { font-weight: bold; margin-right: 0.8em; }
+
+.t4w-itemize {}
+.t4w-enumerate {}
+.t4w-thebibliography {}
+.t4w-thebibliography-title { font-weight: bold; }
+
+.t4w-item {}
+.t4w-bibitem {}
+
+/* Enumerate */
+.t4w-enumerate .t4w-item { list-style-type: decimal; }
+
+.t4w-enumerate .t4w-enumerate
+.t4w-item { list-style-type: lower-latin; }
+
+.t4w-enumerate .t4w-enumerate .t4w-enumerate
+.t4w-item { list-style-type: lower-roman; }
+
+.t4w-enumerate .t4w-enumerate .t4w-enumerate .t4w-enumerate
+.t4w-item { list-style-type: upper-latin; }
+
+/* Itemize */
+.t4w-itemize .t4w-item { list-style-type: disc; }
+
+.t4w-itemize .t4w-itemize
+.t4w-item { list-style-type: circle; }
+
+.t4w-itemize .t4w-itemize .t4w-itemize
+.t4w-item { list-style-type: square; }
+
+.t4w-itemize .t4w-itemize .t4w-itemize .t4w-itemize
+.t4w-item { list-style-type: square; }
+
+/* Paragraph environments */
+.t4w-abstract { margin: 1em; }
+.t4w-abstract-title { font-weight: bold; }
+
+.t4w-center { width: 100%; text-align: center; }
+.t4w-flushleft { width: 100%; text-align: left; }
+.t4w-flushright { width: 100%; text-align: right; }
+
+.t4w-quotation { width: 100%; text-align: justify; margin: 0em 2em 0em 2em; }
+.t4w-quote { width: 100%; text-align: justify; margin: 0em 2em 0em 2em; }
+
+.t4w-title { text-align: center; }
+
+/* Tabular */
+.t4w-tabular {}
+.t4w-tabular-l { text-align: left; }
+.t4w-tabular-c { text-align: center; }
+.t4w-tabular-r { text-align: right; }
+.t4w-tabular-p { vertical-align: top; }
+.t4w-tabular-m { vertical-align: middle; }
+.t4w-tabular-b { vertical-align: bottom; }
+
+/* References */
+.t4w-cite {}
+.t4w-href {}
+.t4w-url {}
+
+.t4w-includegraphics {}
+
+.t4w-ref {}
+.t4w-autoref {}
+
+.t4w-bibitem-backref {
+    font-weight: bold;
+}
+
+/* Colors */
+.t4w-color-white { color: white; }
+.t4w-color-black { color: black; }
+.t4w-color-red { color: red; }
+.t4w-color-green { color: green; }
+.t4w-color-blue { color: blue; }
+.t4w-color-cyan { color: #00FFFF; }
+.t4w-color-magenta { color: #FF00FF; }
+.t4w-color-yellow { color: #FFFF00; }
+
+.t4w-color-Apricot { color: #FBB982; }
+.t4w-color-Aquamarine { color: #00B5BE; }
+.t4w-color-Bittersweet { color: #C04F17; }
+.t4w-color-Black { color: #221E1F; }
+.t4w-color-Blue { color: #2D2F92; }
+.t4w-color-BlueGreen { color: #00B3B8; }
+.t4w-color-BlueViolet { color: #473992; }
+.t4w-color-BrickRed { color: #B6321C; }
+.t4w-color-Brown { color: #792500; }
+.t4w-color-BurntOrange { color: #F7921D; }
+.t4w-color-CadetBlue { color: #74729A; }
+.t4w-color-CarnationPink { color: #F282B4; }
+.t4w-color-Cerulean { color: #00A2E3; }
+.t4w-color-CornﬂowerBlue { color: #41B0E4; }
+.t4w-color-Cyan { color: #00AEEF; }
+.t4w-color-Dandelion { color: #FDBC42; }
+.t4w-color-DarkOrchid { color: #A4538A; }
+.t4w-color-Emerald { color: #00A99D; }
+.t4w-color-ForestGreen { color: #009B55; }
+.t4w-color-Fuchsia { color: #8C368C; }
+.t4w-color-Goldenrod { color: #FFDF42; }
+.t4w-color-Gray { color: #949698; }
+.t4w-color-Green { color: #00A64F; }
+.t4w-color-GreenYellow { color: #DFE674; }
+.t4w-color-JungleGreen { color: #00A99A; }
+.t4w-color-Lavender { color: #F49EC4; }
+.t4w-color-LimeGreen { color: #8DC73E; }
+.t4w-color-Magenta { color: #EC008C; }
+.t4w-color-Mahogany { color: #A9341F; }
+.t4w-color-Maroon { color: #AF3235; }
+.t4w-color-Melon { color: #F89E7B; }
+.t4w-color-MidnightBlue { color: #006795; }
+.t4w-color-Mulberry { color: #A93C93; }
+.t4w-color-NavyBlue { color: #006EB8; }
+.t4w-color-OliveGreen { color: #3C8031; }
+.t4w-color-Orange { color: #F58137; }
+.t4w-color-OrangeRed { color: #ED135A; }
+.t4w-color-Orchid { color: #AF72B0; }
+.t4w-color-Peach { color: #F7965A; }
+.t4w-color-Periwinkle { color: #7977B8; }
+.t4w-color-PineGreen { color: #008B72; }
+.t4w-color-Plum { color: #92268F; }
+.t4w-color-ProcessBlue { color: #00B0F0; }
+.t4w-color-Purple { color: #99479B; }
+.t4w-color-RawSienna { color: #974006; }
+.t4w-color-Red { color: #ED1B23; }
+.t4w-color-RedOrange { color: #F26035; }
+.t4w-color-RedViolet { color: #A1246B; }
+.t4w-color-Rhodamine { color: #EF559F; }
+.t4w-color-RoyalBlue { color: #0071BC; }
+.t4w-color-RoyalPurple { color: #613F99; }
+.t4w-color-RubineRed { color: #ED017D; }
+.t4w-color-Salmon { color: #F69289; }
+.t4w-color-SeaGreen { color: #3FBC9D; }
+.t4w-color-Sepia { color: #671800; }
+.t4w-color-SkyBlue { color: #46C5DD; }
+.t4w-color-SpringGreen { color: #C6DC67; }
+.t4w-color-Tan { color: #DA9D76; }
+.t4w-color-TealBlue { color: #00AEB3; }
+.t4w-color-Thistle { color: #D883B7; }
+.t4w-color-Turquoise { color: #00B4CE; }
+.t4w-color-Violet { color: #58429B; }
+.t4w-color-VioletRed { color: #EF58A0; }
+.t4w-color-WildStrawberry { color: #EE2967; }
+.t4w-color-Yellow { color: #FFF200; }
+.t4w-color-YellowGreen { color: #98CC70; }
+.t4w-color-YellowOrange { color: #FAA21A; }
+

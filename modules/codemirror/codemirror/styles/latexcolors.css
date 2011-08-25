@@ -1,0 +1,36 @@
+body {
+  padding: 0;
+}
+
+.editbox {
+  font-family: monospace;
+  font-size: 13px;
+  padding-top: 2px;
+  margin: 0;
+  background-color: #FFFFFF;
+}
+
+.editbox p {
+  margin: 0;
+  padding: 0;
+}
+
+span.latex-text {
+}
+
+span.latex-command {
+  color: #000084;
+  font-weight: bold;
+}
+
+span.latex-comment {
+  color: green;	
+}
+
+span.latex-inline-math {
+  color: #882288;	
+}
+
+span.latex-braces {
+  color: #346CB7;
+}
