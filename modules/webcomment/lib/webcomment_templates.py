@@ -364,12 +364,12 @@ class Template:
         if attached_files is None:
             attached_files = []
         out = ''
-         if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
-            and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
-             image_base = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/' + str(recID) + '/comments/attachments/get/' + str(com_id) + '/'
-             final_body = TeX4WebSW(image_base).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape')
-         else:
-             final_body = email_quoted_txt2html(body)
+        if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
+           and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
+            image_base = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/' + str(recID) + '/comments/attachments/get/' + str(com_id) + '/'
+            final_body = TeX4WebSW(image_base).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape')
+        else:
+            final_body = email_quoted_txt2html(body)
         title = _('%(x_name)s') % {'x_name': nickname,}
         title += '<a name=%s></a>' % com_id
         links = ''
@@ -495,14 +495,14 @@ class Template:
         links = ''
         _body = ''
         if body != '':
-             if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
-                and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
-                 _body = '''
-       <blockquote>
- %s
-       </blockquote>''' % TeX4WebSW(None).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape') 
-             else:
-                 _body = '''
+            if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
+               and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
+                _body = '''
+      <blockquote>
+%s
+      </blockquote>''' % TeX4WebSW(None).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape') 
+            else:
+                _body = '''
       <blockquote>
 %s
       </blockquote>''' % email_quoted_txt2html(body, linebreak_html='')
