@@ -442,7 +442,7 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
                 <a id="m-editor-layout-vertical" href="#"
                     class="text-button">vertical</a> 
             </div> 
-            <div class="m-editor-block-title"><span class="math">\TeX^4Web</span> editor (<a target="_blank" href="/tex4web/help">help</a>):</div> 
+            <div class="m-editor-block-title"><span class="math">\TeX^4Web</span> editor (<a target="_blank" href="http://sciencewise.info/tex4web/help">help</a>):</div> 
 	            <div class="m-editor-block-resizer"> 
 	              <div class="m-editor-block-content m-editor-editor-content"> 
 	                <textarea id="id_content" rows="10" cols="40" name="%(name)s">%(content)s</textarea>
