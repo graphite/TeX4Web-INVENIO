@@ -436,7 +436,7 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
             editor += '''<div id="m-editor-resizer" class="ui-resizable"> 
     <div class="m-editor-inner"> 
         <div class="m-editor-block"> 
-            <div class="m-editor-block-options" style="display:none">Layout:
+            <div class="m-editor-block-options">Layout:
                 <a id="m-editor-layout-horizontal" href="#"
                     class="text-button text-button-selected">horizontal</a> 
                 <a id="m-editor-layout-vertical" href="#"
