@@ -50,7 +50,8 @@ from invenio.config import CFG_PREFIX, \
      CFG_WEBCOMMENT_EMAIL_REPLIES_TO, \
      CFG_WEBCOMMENT_ROUND_DATAFIELD, \
      CFG_WEBCOMMENT_RESTRICTION_DATAFIELD, \
-     CFG_WEBCOMMENT_MAX_COMMENT_THREAD_DEPTH
+     CFG_WEBCOMMENT_MAX_COMMENT_THREAD_DEPTH, \
+     CFG_WEBCOMMENT_RICH_TEXT_EDITOR
 from invenio.webmessage_mailutils import \
      email_quote_txt, \
      email_quoted_txt2html
@@ -1607,17 +1608,21 @@ def perform_request_add_comment_or_remark(recID=0,
                         # 1 For CkEditor input
                         msg += '\n\n'
                         msg += comment[3]
-                        msg = email_quote_txt(text=msg)
-                        # Now that we have a text-quoted version, transform into
-                        # something that CkEditor likes, using <blockquote> that
-                        # do still enable users to insert comments inline
-                        msg = email_quoted_txt2html(text=msg,
-                                                    indent_html=('<blockquote><div>', '&nbsp;&nbsp;</div></blockquote>'),
-                                                    linebreak_html="&nbsp;<br/>",
-                                                    indent_block=False)
-                        # Add some space for users to easily add text
-                        # around the quoted message
-                        msg = '<br/>' + msg + '<br/>'
+                        if CFG_WEBCOMMENT_RICH_TEXT_EDITOR != 'tex4web':
+                            msg = email_quote_txt(text=msg)
+                            # Now that we have a text-quoted version, transform into
+                            # something that CkEditor likes, using <blockquote> that
+                            # do still enable users to insert comments inline
+                            msg = email_quoted_txt2html(text=msg,
+                                                       indent_html=('<blockquote><div>', '&nbsp;&nbsp;</div></blockquote>'),
+                                                       linebreak_html="&nbsp;<br/>",
+                                                       indent_block=False)
+                            # Add some space for users to easily add text
+                            # around the quoted message
+                            msg = '<br/>' + msg + '<br/>'
+                        else:
+                            msg = '\\begin{quote}' + msg + '\\end{quote}'
+                            msg += '\n\n'
                         # Due to how things are done, we need to
                         # escape the whole msg again for the editor
                         msg = cgi.escape(msg)

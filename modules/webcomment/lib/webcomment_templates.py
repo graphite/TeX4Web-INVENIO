@@ -38,6 +38,7 @@ from invenio.config import CFG_SITE_URL, \
                            CFG_WEBCOMMENT_ALLOW_REVIEWS, \
                            CFG_WEBCOMMENT_ALLOW_COMMENTS, \
                            CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR, \
+                           CFG_WEBCOMMENT_RICH_TEXT_EDITOR, \
                            CFG_WEBCOMMENT_NB_REPORTS_BEFORE_SEND_EMAIL_TO_ADMIN, \
                            CFG_WEBCOMMENT_AUTHOR_DELETE_COMMENT_OPTION, \
                            CFG_CERN_SITE, \
@@ -49,6 +50,7 @@ from invenio.messages import gettext_set_language
 from invenio.bibformat import format_record
 from invenio.access_control_engine import acc_authorize_action
 from invenio.search_engine_utils import get_fieldvalues
+from invenio.tex4web_sw import TeX4WebSW
 
 class Template:
     """templating class, refer to webcomment.py for examples of call"""
@@ -1199,7 +1201,7 @@ class Template:
             # Offer to subscribe to discussion
             subscribe_to_discussion = '<small><input type="checkbox" name="subscribe" id="subscribe"/><label for="subscribe">%s</label></small>' % _("Send me an email when a new comment is posted")
 
-        form = """<div id="comment-write"><h2>%(add_comment)s</h2>
+        form = """<div id="comment-write"><h2 class="comment-write">%(add_comment)s</h2>
 
 %(editor)s
 <br />

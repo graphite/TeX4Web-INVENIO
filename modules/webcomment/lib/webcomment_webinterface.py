@@ -480,7 +480,12 @@ class WebInterfaceCommentsPages(WebInterfaceDirectory):
                 title = _("Add Review")
             else:
                 title = _("Add Comment")
-
+            mathjaxheader = ''
+            if CFG_WEBCOMMENT_USE_MATHJAX_IN_COMMENTS:
+                mathjaxheader = get_mathjax_header()
+            tex4webheader = ''
+            if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
+                tex4webheader = get_tex4web_header()
             jqueryheader = '''
             <script src="%(CFG_SITE_URL)s/js/jquery.min.js" type="text/javascript" language="javascript"></script>
             <script src="%(CFG_SITE_URL)s/js/jquery.MultiFile.pack.js" type="text/javascript" language="javascript"></script>
@@ -494,7 +499,7 @@ class WebInterfaceCommentsPages(WebInterfaceDirectory):
                         verbose=1,
                         req=req,
                         navmenuid='search',
-                        metaheaderadd=jqueryheader)
+                        metaheaderadd=jqueryheader+mathjaxheader+tex4webheader)
         # id not in range
         else:
             return page(title=_("Record Not Found"),

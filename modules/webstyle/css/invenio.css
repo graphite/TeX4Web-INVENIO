@@ -1206,7 +1206,7 @@ input[disabled], input[disabled="true"]{
    clear:right;
 }
 
-#comment-write h2 {
+h2.comment-write {
    background:#fff;
    font-size:1.4em;
    font-weight:400;
