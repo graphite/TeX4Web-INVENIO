@@ -73,15 +73,9 @@ class Template:
         c_user_id = 1
         c_date_creation = 2
         c_body = 3
-        c_id = 6
+        c_id = 4
 
         warnings = self.tmpl_warnings(warnings, ln)
-
-        # write button
-        write_button_label = _("Write a comment")
-        write_button_link = '%s/%s/%s/comments/add' % (CFG_SITE_URL, CFG_SITE_RECORD, recID)
-        write_button_form = '<input type="hidden" name="ln" value="%s"/>' % ln
-        write_button_form = self.createhiddenform(action=write_button_link, method="get", text=write_button_form, button=write_button_label)
 
         # comments
         comment_rows = ''
@@ -92,10 +86,7 @@ class Template:
 
         for comment_round_name, comments_list in comments:
             comment_rows += '<div id="cmtRound%s" class="cmtRound">' % (comment_round_name)
-            if comment_round_name:
-                comment_rows += _('<div class="webcomment_comment_round_header">%(x_nb)i Comments for round "%(x_name)s"') % {'x_nb': len(comments_list), 'x_name': comment_round_name}  + "</div>"
-            else:
-                comment_rows += _('<div class="webcomment_comment_round_header">%(x_nb)i Comments') % {'x_nb': len(comments_list),}  + "</div>"
+            comment_rows += _('%(x_nb)i comments for round "%(x_name)s"') % {'x_nb': len(comments_list), 'x_name': comment_round_name}  + "<br/>"
             for comment in comments_list:
                 if comment[c_nickname]:
                     nickname = comment[c_nickname]
@@ -120,21 +111,30 @@ class Template:
             # Close comment round
             comment_rows += '</div>'
 
+            # write button
+            write_button_label = _("Write a comment")
+            write_button_link = '%s/%s/%s/comments/add' % (CFG_SITE_URL, CFG_SITE_RECORD, recID)
+            write_button_form = '<input type="hidden" name="ln" value="%s"/>' % ln
+            write_button_form = self.createhiddenform(action=write_button_link, method="get", text=write_button_form, button=write_button_label)
+
             # output
             if nb_comments_total > 0:
                 out = warnings
                 comments_label = len(comments) > 1 and _("Showing the latest %i comments:") % len(comments) \
                                  or ""
                 out += """
-<div class="video_content_clear"></div>
-<table class="webcomment_header_comments">
+<table>
   <tr>
     <td class="blocknote">%(comment_title)s</td>
   </tr>
 </table>
-<div class="websomment_header_comments_label">%(comments_label)s</div>
+%(comments_label)s<br />
+<table border="0" cellspacing="5" cellpadding="5" width="100%%">
   %(comment_rows)s
+</table>
 %(view_all_comments_link)s
+<br />
+<br />
 %(write_button_form)s<br />""" % \
             {'comment_title': _("Discuss this document"),
              'comments_label': comments_label,
@@ -144,24 +144,23 @@ class Template:
              'tab': '&nbsp;'*4,
              'siteurl': CFG_SITE_URL,
              's': nb_comments_total>1 and 's' or "",
-             'view_all_comments_link': nb_comments_total>0 and '''<a class="webcomment_view_all_comments" href="%s/%s/%s/comments/display">View all %s comments</a>''' \
+             'view_all_comments_link': nb_comments_total>0 and '''<a href="%s/%s/%s/comments/display">View all %s comments</a>''' \
                                                                   % (CFG_SITE_URL, CFG_SITE_RECORD, recID, nb_comments_total) or "",
              'write_button_form': write_button_form,
              'nb_comments': len(comments)
             }
-        if not comments:
+            else:
                 out = """
 <!--  comments title table -->
-<table class="webcomment_header_comments">
+<table>
   <tr>
     <td class="blocknote">%(discuss_label)s:</td>
   </tr>
 </table>
-<div class="webcomment_header_details">%(detailed_info)s
+%(detailed_info)s
 <br />
-</div>
 %(form)s
-""" % {'form': write_button_form,
+<br />""" % {'form': write_button_form,
              'discuss_label': _("Discuss this document"),
              'detailed_info': _("Start a discussion about any aspect of this document.")
              }
@@ -289,13 +288,13 @@ class Template:
                  'x_nb_reviews': nb_comments_total}
             useful_label = _("Readers found the following %s reviews to be most helpful.")
             useful_label %= len(comments) > 1 and len(comments) or ""
-            view_all_comments_link ='<a class"webcomment_view_all_reviews" href="%s/%s/%s/reviews/display?ln=%s&amp;do=hh">' % (CFG_SITE_URL, CFG_SITE_RECORD, recID, ln)
+            view_all_comments_link ='<a href="%s/%s/%s/reviews/display?ln=%s&amp;do=hh">' % (CFG_SITE_URL, CFG_SITE_RECORD, recID, ln)
             view_all_comments_link += _("View all %s reviews") % nb_comments_total
             view_all_comments_link += '</a><br />'
 
             out = warnings + """
                 <!--  review title table -->
-                <table class="webcomment_header_ratings">
+                <table>
                   <tr>
                     <td class="blocknote">%(comment_title)s:</td>
                   </tr>
@@ -303,7 +302,7 @@ class Template:
                 %(score_label)s<br />
                 %(useful_label)s
                 <!-- review table -->
-                <table class="webcomment_review_title_table">
+                <table style="border: 0px; border-collapse: separate; border-spacing: 5px; padding: 5px; width: 100%%">
                     %(comment_rows)s
                 </table>
                 %(view_all_comments_link)s
@@ -324,7 +323,7 @@ class Template:
         else:
             out = '''
                  <!--  review title table -->
-                <table class="webcomment_header_ratings">
+                <table>
                   <tr>
                     <td class="blocknote">%s:</td>
                   </tr>
@@ -332,7 +331,7 @@ class Template:
                 %s<br />
                 %s
                 <br />''' % (_("Rate this document"),
-                           _('<div class="webcomment_review_first_introduction">Be the first to review this document.</div>'),
+                           _("Be the first to review this document."),
                            write_button_form)
         return out
 
@@ -367,19 +366,23 @@ class Template:
             attached_files = []
         out = ''
         if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
-           and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
+           and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web' \
+           and body.startswith("%% TeX4Web comment"):
             image_base = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/' + str(recID) + '/comments/attachments/get/' + str(com_id) + '/'
             final_body = TeX4WebSW(image_base).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape')
         else:
             final_body = email_quoted_txt2html(body)
-        title = _('%(x_name)s') % {'x_name': nickname,}
+        title = _('%(x_name)s wrote on %(x_date)s:') % {'x_name': nickname,
+                                                        'x_date': '<i>' + date_creation + '</i>'}
         title += '<a name=%s></a>' % com_id
         links = ''
         moderator_links = ''
         if reply_link:
-            links += '<a class="webcomment_comment_reply" href="' + reply_link +'">' + _("Reply") +'</a>'
+            links += '<a href="' + reply_link +'">' + _("Reply") +'</a>'
+            if report_link and status != 'ap':
+                links += ' | '
         if report_link and status != 'ap':
-            links += '<a class="webcomment_comment_report" href="' + report_link +'">' + _("Report abuse") + '</a>'
+            links += '<a href="' + report_link +'">' + _("Report abuse") + '</a>'
         # Check if user is a comment moderator
         record_primary_collection = guess_primary_collection_of_a_record(recID)
         user_info = collect_user_info(req)
@@ -387,36 +390,37 @@ class Template:
         if status in ['dm', 'da'] and req:
             if not auth_code:
                 if status == 'dm':
-                    final_body = '<div class="webcomment_deleted_comment_message">(Comment deleted by the moderator) - not visible for users<br /><br />' +\
+                    final_body = '<div style="color:#a3a3a3;font-style:italic;">(Comment deleted by the moderator) - not visible for users<br /><br />' +\
                                  final_body + '</div>'
                 else:
-                    final_body = '<div class="webcomment_deleted_comment_message">(Comment deleted by the author) - not visible for users<br /><br />' +\
+                    final_body = '<div style="color:#a3a3a3;font-style:italic;">(Comment deleted by the author) - not visible for users<br /><br />' +\
                                  final_body + '</div>'
 
                 links = ''
-                moderator_links += '<a class="webcomment_deleted_comment_undelete" href="' + undelete_link + '">' + _("Undelete comment") + '</a>'
+                moderator_links += '<a style="color:#8B0000;" href="' + undelete_link + '">' + _("Undelete comment") + '</a>'
             else:
                 if status == 'dm':
-                    final_body = '<div class="webcomment_deleted_comment_message">Comment deleted by the moderator</div>'
+                    final_body = '<div style="color:#a3a3a3;font-style:italic;">Comment deleted by the moderator</div>'
                 else:
-                    final_body = '<div class="webcomment_deleted_comment_message">Comment deleted by the author</div>'
+                    final_body = '<div style="color:#a3a3a3;font-style:italic;">Comment deleted by the author</div>'
                 links = ''
         else:
             if not auth_code:
-                moderator_links += '<a class="webcomment_comment_delete" href="' + delete_links['mod'] +'">' + _("Delete comment") + '</a>'
+                moderator_links += '<a style="color:#8B0000;" href="' + delete_links['mod'] +'">' + _("Delete comment") + '</a>'
             elif (user_info['uid'] == comment_uid) and CFG_WEBCOMMENT_AUTHOR_DELETE_COMMENT_OPTION:
-                moderator_links += '<a class="webcomment_comment_delete" href="' + delete_links['auth'] +'">' + _("Delete comment") + '</a>'
+                moderator_links += '<a style="color:#8B0000;" href="' + delete_links['auth'] +'">' + _("Delete comment") + '</a>'
 
         if nb_reports >= CFG_WEBCOMMENT_NB_REPORTS_BEFORE_SEND_EMAIL_TO_ADMIN:
             if not auth_code:
-                final_body = '<div class="webcomment_reported_comment_message">(Comment reported. Pending approval) - not visible for users<br /><br />' + final_body + '</div>'
+                final_body = '<div style="color:#a3a3a3;font-style:italic;">(Comment reported. Pending approval) - not visible for users<br /><br />' + final_body + '</div>'
                 links = ''
-                moderator_links += '<a class="webcomment_reported_comment_unreport" href="' + unreport_link +'">' + _("Unreport comment") + '</a>'
+                moderator_links += ' | '
+                moderator_links += '<a style="color:#8B0000;" href="' + unreport_link +'">' + _("Unreport comment") + '</a>'
             else:
-                final_body = '<div class="webcomment_comment_pending_approval_message">This comment is pending approval due to user reports</div>'
+                final_body = '<div style="color:#a3a3a3;font-style:italic;">This comment is pending approval due to user reports</div>'
                 links = ''
         if links and moderator_links:
-            links = links + moderator_links
+            links = links + ' || ' + moderator_links
         elif not links:
             links = moderator_links
 
@@ -429,30 +433,18 @@ class Template:
             attached_files_html += '</div>'
 
         out += """
-<div class="webcomment_comment_box">
-    <div class="webcomment_comment_avatar"><img class="webcomment_comment_avatar_default" src="%(site_url)s/img/user-icon-1-24x24.gif" alt="avatar" /></div>
-    <div class="webcomment_comment_content">
-        <div class="webcomment_comment_title">
-            %(title)s
-            <div class="webcomment_comment_date">%(date)s</div>
-        </div>
-            <blockquote>
-        %(body)s
-            </blockquote>
-        %(attached_files_html)s
-
-        <div class="webcomment_comment_options">%(links)s</div>
-        <div class="clearer"></div>
-    </div>
-    <div class="clearer"></div>
+<div style="margin-bottom:20px;background:#F9F9F9;border:1px solid #DDD">%(title)s<br />
+    <blockquote>
+%(body)s
+    </blockquote>
+<br />
+%(attached_files_html)s
+<div style="float:right">%(links)s</div>
 </div>""" % \
-                {'title'         : title,
+                {'title'         : '<div style="background-color:#EEE;padding:2px;"><img src="%s/img/user-icon-1-24x24.gif" alt="" />&nbsp;%s</div>' % (CFG_SITE_URL, title),
                  'body'          : final_body,
                  'links'         : links,
-                 'attached_files_html': attached_files_html,
-                 'date': date_creation,
-                 'site_url': CFG_SITE_URL,
-                 }
+                 'attached_files_html': attached_files_html}
         return out
 
     def tmpl_get_comment_with_ranking(self, req, ln, nickname, comment_uid, date_creation, body, status, nb_reports, nb_votes_total, nb_votes_yes, star_score, title, report_link=None, delete_links=None, undelete_link=None, unreport_link=None, recID=-1):
@@ -476,8 +468,7 @@ class Template:
         @param recID: recID where the comment is posted
         @return: html table of review
         """
-        from invenio.search_engine import guess_primary_collection_of_a_record
-        # load the right message language
+        from invenio.search_engine import guess_primary_collection_of_a_record        # load the right message language
         _ = gettext_set_language(ln)
 
         if star_score > 0:
@@ -489,10 +480,7 @@ class Template:
 
         date_creation = convert_datetext_to_dategui(date_creation, ln=ln)
         reviewed_label = _("Reviewed by %(x_nickname)s on %(x_date)s") % {'x_nickname': nickname, 'x_date':date_creation}
-        ## FIX
-        nb_votes_yes = str(nb_votes_yes)
-        nb_votes_total = str(nb_votes_total)
-        useful_label = _("%(x_nb_people)s out of %(x_nb_total)s people found this review useful") % {'x_nb_people': nb_votes_yes,
+        useful_label = _("%(x_nb_people)i out of %(x_nb_total)i people found this review useful") % {'x_nb_people': nb_votes_yes,
                                                                                                      'x_nb_total': nb_votes_total}
         links = ''
         _body = ''
@@ -516,40 +504,39 @@ class Template:
         if status in ['dm', 'da'] and req:
             if not auth_code:
                 if status == 'dm':
-                    _body = '<div class="webcomment_deleted_review_message">(Review deleted by moderator) - not visible for users<br /><br />' +\
+                    _body = '<div style="color:#a3a3a3;font-style:italic;">(Review deleted by moderator) - not visible for users<br /><br />' +\
                             _body + '</div>'
                 else:
-                    _body = '<div class="webcomment_deleted_review_message">(Review deleted by author) - not visible for users<br /><br />' +\
+                    _body = '<div style="color:#a3a3a3;font-style:italic;">(Review deleted by author) - not visible for users<br /><br />' +\
                             _body + '</div>'
-                links = '<a class="webcomment_deleted_review_undelete" href="' + undelete_link + '">' + _("Undelete review") + '</a>'
+                links = '<a style="color:#8B0000;" href="' + undelete_link + '">' + _("Undelete review") + '</a>'
             else:
                 if status == 'dm':
-                    _body = '<div class="webcomment_deleted_review_message">Review deleted by moderator</div>'
+                    _body = '<div style="color:#a3a3a3;font-style:italic;">Review deleted by moderator</div>'
                 else:
-                    _body = '<div class="webcomment_deleted_review_message">Review deleted by author</div>'
+                    _body = '<div style="color:#a3a3a3;font-style:italic;">Review deleted by author</div>'
                 links = ''
         else:
             if not auth_code:
-                links += '<a class="webcomment_review_delete" href="' + delete_links['mod'] +'">' + _("Delete review") + '</a>'
+                links += '<a style="color:#8B0000;" href="' + delete_links['mod'] +'">' + _("Delete review") + '</a>'
 
         if nb_reports >= CFG_WEBCOMMENT_NB_REPORTS_BEFORE_SEND_EMAIL_TO_ADMIN:
             if not auth_code:
-                _body = '<div class="webcomment_review_pending_approval_message">(Review reported. Pending approval) - not visible for users<br /><br />' + _body + '</div>'
+                _body = '<div style="color:#a3a3a3;font-style:italic;">(Review reported. Pending approval) - not visible for users<br /><br />' + _body + '</div>'
                 links += ' | '
-                links += '<a class="webcomment_reported_review_unreport" href="' + unreport_link +'">' + _("Unreport review") + '</a>'
+                links += '<a style="color:#8B0000;" href="' + unreport_link +'">' + _("Unreport review") + '</a>'
             else:
-                _body = '<div class="webcomment_review_pending_approval_message">This review is pending approval due to user reports.</div>'
+                _body = '<div style="color:#a3a3a3;font-style:italic;">This review is pending approval due to user reports.</div>'
                 links = ''
 
         out += '''
-<div class="webcomment_review_box">
-  <div class="webcomment_review_box_inner">
-    <img src="%(siteurl)s/img/%(star_score_img)s" alt="%(star_score)s/>
-      <div class="webcomment_review_title">%(title)s</div>
-      <div class="webcomment_review_label_reviewed">%(reviewed_label)s</div>
-      <div class="webcomment_review_label_useful">%(useful_label)s</div>
-  %(body)s
+<div style="background:#F9F9F9;border:1px solid #DDD">
+  <div style="background-color:#EEE;padding:2px;">
+    <img src="%(siteurl)s/img/%(star_score_img)s" alt="%(star_score)s" style="margin-right:10px;"/><b>%(title)s</b><br />
+      %(reviewed_label)s<br />
+      %(useful_label)s
   </div>
+  %(body)s
 </div>
 %(abuse)s''' % {'siteurl'        : CFG_SITE_URL,
                'star_score_img': star_score_img,
@@ -757,7 +744,7 @@ class Template:
                 # do NOT delete the HTML comment below. It is used for parsing... (I plead unguilty!)
                 comments_rows += """
     <!-- start comment row -->
-    <div class="webcomment_comment_depth_%s">""" % (depth)
+    <div style="margin-left:%spx">""" % (depth*20)
                 delete_links = {}
                 if not reviews:
                     report_link = '%(siteurl)s/%(CFG_SITE_RECORD)s/%(recID)s/comments/report?ln=%(ln)s&amp;comid=%%(comid)s&amp;do=%(do)s&amp;ds=%(ds)s&amp;nb=%(nb)s&amp;p=%(p)s&amp;referer=%(siteurl)s/%(CFG_SITE_RECORD)s/%(recID)s/comments/display' % useful_dict % {'comid':comment[c_id]}
@@ -868,7 +855,7 @@ class Template:
         body = '''
 %(comments_and_review_tabs)s
 <!-- start comments table -->
-<div class="webcomment_comment_table">
+<div style="border: %(border)spx solid black; width: 95%%; margin:10px;font-size:small">
   %(comments_rows)s
 </div>
 <!-- end comments table -->
@@ -887,7 +874,7 @@ class Template:
             'module'                    : "comments",
             'recid'                     : recID,
             'ln'                        : ln,
-            #'border'                    : border,
+            'border'                    : border,
             'ranking_avg'               : ranking_average,
             'comments_and_review_tabs'  : CFG_WEBCOMMENT_ALLOW_REVIEWS and \
                                        CFG_WEBCOMMENT_ALLOW_COMMENTS and \
@@ -975,7 +962,7 @@ class Template:
         else:
             body += '<br/><em>' + _("You are not authorized to comment or review.") + '</em>'
 
-        return '<div class="webcomment_container">' + body + '</div>'
+        return '<div style="margin-left:10px;margin-right:10px;">' + body + '</div>'
 
     def create_messaging_link(self, to, display_name, ln=CFG_SITE_LANG):
         """prints a link to the messaging system"""
@@ -1209,7 +1196,7 @@ class Template:
                   <span class="reportabuse">%(note)s</span>
                   <div class="submit-area">
                       %(subscribe_to_discussion)s<br />
-                      <input class="adminbutton" type="submit" value="Add comment" onclick="user_must_confirm_before_leaving_page = false;return true;"/>
+                      <input class="adminbutton" type="submit" value="Add comment" onclick='user_must_confirm_before_leaving_page = false; t4w = $("#m-editor-resizer"); ck = $("#ck-container"); val = $("#msg").val(); if (t4w.length != 0 && t4w.is(":visible")) {val="%%%% TeX4Web comment\\n" + $("#id_content").val(); $("msgeditortype").val("tex4web"); } else if (ck.length != 0 && ck.is(":visible")) {val = ck_editor.getData()}; $("#msg").val(val); return true;'/>
                       %(reply_to)s
                   </div>
                 """ % {'note': note,

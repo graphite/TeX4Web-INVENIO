@@ -431,6 +431,7 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
     editor = ''
 
     if enabled and (editor_name == 'tex4web' or ckeditor_available):
+        editor += '<input type="hidden" name="%(name)s" id="%(name)s"/>' % {'name' : name}
         if editor_name == 'tex4web':
             # Tex4Web
             editor += '''<div id="m-editor-resizer" class="ui-resizable"> 
@@ -445,7 +446,7 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
             <div class="m-editor-block-title"><span class="math">\TeX^4Web</span> editor (<a target="_blank" href="http://sciencewise.info/tex4web/help">help</a>):</div> 
 	            <div class="m-editor-block-resizer"> 
 	              <div class="m-editor-block-content m-editor-editor-content"> 
-	                <textarea id="id_content" rows="10" cols="40" name="%(name)s">%(content)s</textarea>
+	                <textarea id="id_content" rows="10" cols="40" name="%(name)s_t4w">%(content)s</textarea>
 	              </div> 
 	            </div> 
        </div> 
@@ -469,82 +470,85 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
         </div> 
     </div> 
 <br style="clear: both;"> 
-</div>''' % {
+<a href="http://sciencewise.info/"><img src="/tex4web/sciencewise.png"/></a> Provided by <a href="http://sciencewise.info/">ScienceWise</a><br/>
+<input class="adminbutton" type="button" value="Switch to HTML editor" onclick="$('#ck-container').show(); $('#m-editor-resizer').hide();">
+</div><div id="ck-container" style="display:none">''' % {
                 'name': name,
                 'content': content
             }
-        else:
-            #CKEditor
-            # Prepare upload path settings
-            file_upload_script = ''
-            if file_upload_url is not None:
-                file_upload_script = ''',
-                filebrowserLinkUploadUrl: '%(file_upload_url)s',
-                filebrowserImageUploadUrl: '%(file_upload_url)s?type=Image',
-                filebrowserFlashUploadUrl: '%(file_upload_url)s?type=Flash'
-                ''' % {'file_upload_url': file_upload_url}
+        #CKEditor
+        # Prepare upload path settings
+        file_upload_script = ''
+        if file_upload_url is not None:
+            file_upload_script = ''',
+            filebrowserLinkUploadUrl: '%(file_upload_url)s',
+            filebrowserImageUploadUrl: '%(file_upload_url)s?type=Image',
+            filebrowserFlashUploadUrl: '%(file_upload_url)s?type=Flash'
+            ''' % {'file_upload_url': file_upload_url}
 
-            # Prepare code to instantiate an editor
-            editor += '''
-            <script language="javascript">
-            /* Load the script only once, or else multiple instance of the editor on the same page will not work */
-            var INVENIO_CKEDITOR_ALREADY_LOADED
+        # Prepare code to instantiate an editor
+        editor += '''
+        <script language="javascript">
+        /* Load the script only once, or else multiple instance of the editor on the same page will not work */
+         var INVENIO_CKEDITOR_ALREADY_LOADED
              if (INVENIO_CKEDITOR_ALREADY_LOADED != 1) {
-                  document.write("<script src='%(CFG_SITE_URL)s/ckeditor/ckeditor.js'><\/script>");
-                  INVENIO_CKEDITOR_ALREADY_LOADED = 1;
+                document.write("<script src='%(CFG_SITE_URL)s/ckeditor/ckeditor.js'><\/script>");
+                 INVENIO_CKEDITOR_ALREADY_LOADED = 1;
              }
-	    </script>
-            <input type="hidden" name="editor_type" id="%(id)seditortype" value="textarea" />
-            <textarea id="%(id)s" name="%(name)s" style="width:%(width)s;height:%(height)s">%(textual_content)s</textarea>
-            <textarea id="%(id)shtmlvalue" name="%(name)shtmlvalue" style="display:none;width:%(width)s;height:%(height)s">%(html_content)s</textarea>
-          <script type="text/javascript">
-            var CKEDITOR_BASEPATH = '/ckeditor/';
+	</script>
+         <input type="hidden" name="editor_type" id="%(id)seditortype" value="textarea" />
+         <textarea id="%(id)s_ck" name="%(name)s_ck" style="width:%(width)s;height:%(height)s">%(textual_content)s</textarea>
+         <textarea id="%(id)s_ckhtmlvalue" name="%(name)s_ckhtmlvalue" style="display:none;width:%(width)s;height:%(height)s">%(html_content)s</textarea>
+         <script type="text/javascript">
+           var CKEDITOR_BASEPATH = '/ckeditor/';
 
-            CKEDITOR.replace( '%(name)s',
-                            {customConfig: '%(custom_configurations_path)s',
-                            toolbar: '%(toolbar)s',
-                            width: '%(width)s',
-                            height:'%(height)s',
-                            language: '%(ln)s'
-                            %(file_upload_script)s
-                            });
+           var ck_editor = CKEDITOR.replace( '%(name)s_ck',
+                           {customConfig: '%(custom_configurations_path)s',
+                           toolbar: '%(toolbar)s',
+                           width: '%(width)s',
+                           height:'%(height)s',
+                           language: '%(ln)s'
+                           %(file_upload_script)s
+                           });
 
-          CKEDITOR.on('instanceReady',
-            function( evt )
-            {
-              /* If CKeditor was correctly loaded, display the nice HTML representation */
-              var oEditor = evt.editor;
-              editor_id = oEditor.id
-              editor_name = oEditor.name
-              var html_editor = document.getElementById(editor_name + 'htmlvalue');
-              oEditor.setData(html_editor.value);
-              var editor_type_field = document.getElementById(editor_name + 'editortype');
-              editor_type_field.value = 'ckeditor';
-              var writer = oEditor.dataProcessor.writer;
-              writer.indentationChars = ''; /*Do not indent source code with tabs*/
-              oEditor.resetDirty();
-              /* Workaround: http://dev.ckeditor.com/ticket/3674 */
+        CKEDITOR.on('instanceReady',
+          function( evt )
+           {
+             /* If CKeditor was correctly loaded, display the nice HTML representation */
+             var oEditor = evt.editor;
+             editor_id = oEditor.id
+             editor_name = oEditor.name
+             var html_editor = document.getElementById(editor_name + 'htmlvalue');
+             oEditor.setData(html_editor.value);
+             var editor_type_field = document.getElementById(editor_name + 'editortype');
+             editor_type_field.value = 'ckeditor';
+             var writer = oEditor.dataProcessor.writer;
+             writer.indentationChars = ''; /*Do not indent source code with tabs*/
+             oEditor.resetDirty();
+             /* Workaround: http://dev.ckeditor.com/ticket/3674 */
               evt.editor.on( 'contentDom', function( ev )
               {
-               ev.removeListener();
-               evt.editor.resetDirty();
+              ev.removeListener();
+              evt.editor.resetDirty();
               } );
-              /* End workaround */
-            })
+             /* End workaround */
+           })
 
-          </script>
-          ''' % \
-              {'textual_content': cgi.escape(textual_content),
-               'html_content': content,
-               'width': width,
-               'height': height,
-               'name': name,
-               'id': id or name,
-               'custom_configurations_path': custom_configurations_path,
-               'toolbar': toolbar_set,
-               'file_upload_script': file_upload_script,
-               'CFG_SITE_URL': CFG_SITE_URL,
-               'ln': ln}
+         </script>
+         ''' % \
+           {'textual_content': cgi.escape(textual_content),
+            'html_content': content,
+            'width': width,
+            'height': height,
+            'name': name,
+            'id': id or name,
+            'custom_configurations_path': custom_configurations_path,
+            'toolbar': toolbar_set,
+            'file_upload_script': file_upload_script,
+            'CFG_SITE_URL': CFG_SITE_URL,
+            'ln': ln}
+        if (editor_name == 'tex4web'):
+            editor += '''<input class="adminbutton" type="button" value="Switch to LaTeX editor" onclick="$('#m-editor-resizer').show(); $('#ck-container').hide();"></div>'''
     else:
         # CKedior is not installed
         textarea = '<textarea %(id)s name="%(name)s" style="width:%(width)s;height:%(height)s">%(content)s</textarea>' \
@@ -557,6 +561,10 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
         editor += '<input type="hidden" name="editor_type" value="textarea" />'
 
     return editor
+
+
+
+
 
 def remove_html_markup(text, replacechar=' '):
     """
