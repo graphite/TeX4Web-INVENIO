@@ -14,12 +14,11 @@ CKEDITOR.editorConfig = function( config )
 {
 
 config.toolbar_WebComment = [
-			     ['Preview'],
 			     ['PasteText','PasteFromWord'],
 			     ['Undo','Redo','-','Find','Replace','-', 'RemoveFormat'],
 			     '/',
 			     ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
-			     ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+			     ['NumberedList','BulletedList','-','Blockquote'],
 			     ['Link','Unlink'],
                              ['HorizontalRule','Smiley','SpecialChar','ScientificChar']
 			     ];
