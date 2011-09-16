@@ -6,6 +6,160 @@ var previewTimer = undefined;
 var editor = {};
 var tex4web = undefined;
 
+var parts = new Array();
+
+function strReplace(str, replace, by)
+{
+    for (var i=0; i<replace.length; i++)
+        str = str.replace(RegExp(replace[i], 'g'), by[i]);
+    return str;
+}
+
+function html_to_tex(str)
+{
+    //This function was first added for INVENIO
+    var allowed_tags = '<a><br><ul><ol><li><hr><strong><b><em><i><u><strike><sup><sub><blockqoute><img>';
+    var tags_re = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+    str = str.replace(tags_re, function($0, $1){
+        return allowed_tags.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+    });
+    str = '<html>' + str + '</html>';
+    str = strReplace(str, Array('<br />', '<ul>', '</ul>', '<ol>', '</ol>', '<li>', '</li>', '<hr />'), Array("\n", '\\begin{itemize}', '\\end{itemize}', '\\begin{enumerate}', '\\end{enumerate}', '\\item', '', '\\rule{width}{thickness}'));
+    var tag = /(<\/?[a-z][a-z0-9]*)\b(?:[^>]*((?:href|src)="[^"]*"))?[^>]*?(\/)?>/;
+    parts = str.split(tag);
+    var result = finalize_tex(0, 0);
+    str = result[0];
+    str = strReplace(str, Array( '&lt;', '&gt;', '&quot;', '&#39;', '&nbsp;', '&amp;'), Array( '<', '>', '"', "'", ' ', '&'));
+    str = str.replace(/\n\n+/g, "\n");
+    return str;
+}
+
+function open_tag(tag, href)
+{
+    var result = Array('', 0);
+    if (typeof(href) == "undefined")
+    {
+        href = '';
+    }
+    switch (tag)
+    {
+        case 'a':
+            result[1] = 1;
+            result[0] = '\\href{' + href.slice(6,-1) + '}{';
+            break;
+        case 'strong':
+        case 'b':
+            result[1] = 1;
+            result[0] = '\\textbf{';
+            break;
+        case 'em':
+        case 'i':
+            result[1] = 1;
+            result[0] = '\\textit{';
+            break;
+        case 'strike':
+            result[1] = 1;
+            result[0] = '\\sout{';
+            break;
+        case 'u':
+            result[1] = 1;
+            result[0] = '\\underline{';
+            break;
+        case 'blockquote':
+            result[1] = 1;
+            result[0] = "\\begin{quote}\n";
+            break;
+        case 'img':
+            result[1] = 0;
+            result[0] = '\\includegraphics{' + href.slice(5, -1) + '}';
+            break;
+        case 'sup':
+            result[1] = 2;
+            result[0] = '$^{';
+            break;
+        case 'sub':
+            result[1] = 2;
+            result[0] = '$_{';
+            break;
+    }
+    return result;
+}
+
+function close_tag(tag)
+{
+    switch (tag)
+    {
+        case 'a':
+        case 'strong':
+        case 'b':
+        case 'em':
+        case 'i':
+        case 'strike':
+        case 'u':
+            return '}';
+            break;
+        case 'blockquote':
+            return "\\\nend{quote}";
+            break;
+        case 'img':
+            return '';
+            break;
+        case 'sup':
+        case 'sub':
+            return "}$";
+            break;
+    }
+    return '';
+}
+
+function finalize_tex(offset, escape_type)
+{
+    var final_str = '';
+    while(offset < parts.length)
+    {
+        if (typeof(parts[offset]) == "undefined")
+            continue;
+        if (parts[offset][0] == '<')
+        {
+            if (parts[offset][1] == '/')
+            {
+                final_str += close_tag(parts[offset].substr(2));
+                return Array(final_str, offset+3);
+            }
+
+            var result = open_tag(parts[offset].substr(1), parts[offset+1]);
+            final_str += result[0];
+            if (typeof(parts[offset+2]) != "undefined")
+            {
+                final_str += close_tag(parts[offset].substr(1));
+                offset += 3;
+            }
+            else
+            {
+                result = finalize_tex(offset+3, (result[1] < escape_type) ? escape_type : result[1]);
+                final_str += result[0];
+                offset = result[1];
+            }
+        }
+        else
+        {
+            if (escape_type > 0)
+            {
+                parts[offset] = parts[offset].replace(/{/g, '\\{');
+                parts[offset] = parts[offset].replace(/}/g, '\\}');
+                parts[offset] = parts[offset].replace(/\\/g, '\\\\');
+            }
+            if (escape_type > 1)
+            {
+                parts[offset] = parts[offset].replace(/\$/g, '\\$');
+            }
+            final_str += parts[offset];
+            offset++;
+        }
+    }
+    return Array(final_str, offset);
+}
+
 function make_preview() {
     if(!window.TeX4WebSW) {
         previewUpdateTime = 500;
@@ -129,6 +283,8 @@ function layout_set_horizontal() {
 }
 
 $(document).ready(function() {
+    if ($('#id_content').length == 0)
+        return;
     editor.panels = {};
     editor.inputElement = $('.m-editor-editor-content textarea')[0];
     editor.previewElement = $('.m-editor-preview-content div')[0];

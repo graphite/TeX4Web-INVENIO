@@ -308,7 +308,7 @@ MathJax.Hub.Config({
   messageStyle: "none"
 });
 </script>
-<script src="%(mathjax_path)s/MathJax.js?config=TeX-AMS_HTML" type="text/javascript">
+<script src="%(mathjax_path)s/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
 </script>""" % {
     'mathjax_path': mathjax_path
 }
@@ -330,14 +330,17 @@ def get_tex4web_header():
     var documentUrl= '/';
     var cancelUrl = '/';
 </script> 
-<script type="text/javascript" src="%(siteurl)s/codemirror/codemirror.js"></script> 
+<!--script type="text/javascript" src="%(siteurl)s/codemirror/codemirror.js"></script--> 
 <script type="text/javascript" src="%(siteurl)s/tex4web/tex4web.js"></script> 
 <script type="text/javascript" src="%(siteurl)s/tex4web/error.js"></script> 
  
 <script type="text/javascript">
     $(document).ready(function() {
+        if ($('#id_content').length == 0)
+          return;
+        layout_set_vertical();
         // Create CodeMirror editor from textarea
-        var editor = CodeMirror.fromTextArea("id_content", {
+        /*var editor = CodeMirror.fromTextArea("id_content", {
           parserfile: "parselatex.js",
           path: "/codemirror/",
           stylesheet: "/codemirror/styles/latexcolors.css",
@@ -348,8 +351,58 @@ def get_tex4web_header():
           height: "100%%",
           passDelay: 10,
           undoDelay: 40
-        });
+        });*/
+        CKEDITOR.on('instanceReady', function()
+        {
+            ck_editor.on('saveSnapshot', somethingChanged);
+            ck_editor.getCommand('undo').on('afterUndo', somethingChanged);
+            ck_editor.getCommand('redo').on('afterRedo', somethingChanged);
+            ck_editor.on('contentDom', function()
+                {
+                    ck_editor.document.on('keydown', function(event)
+                        {
+                            if (!event.data.$.ctrlKey && !event.data.$.metaKey)
+                                somethingChanged();
+                        });
+                    ck_editor.document.on('drop', somethingChanged);
+                    ck_editor.document.getBody().on('drop', somethingChanged);
+                });
+            ck_editor.on('mode', function(e)
+                {
+                    if (editor.mode != 'source')
+                        return;
+                    editor.textarea.on('keydown', function(event)
+                        {
+                            if (!event.data.$.ctrlKey && !event.data.$.metaKey)
+                                somethingChanged();
+                        });
+                    ck_editor.textarea.on('drop', somethingChanged);
+                    ck_editor.textarea.on('input', somethingChanged);
+                });
+            ck_editor.on('afterCommandExec', function(event)
+                {
+                    if (event.data.name == 'source')
+                        return;
+
+                    if (event.data.command.canUndo !== false)
+                        somethingChanged();
+                });
+            });
     });
+
+    var timer;
+
+    function somethingChanged()
+    {
+        if (timer)
+            return;
+
+        timer = setTimeout( function() {
+                timer = 0;
+                $('#id_content').val(html_to_tex(ck_editor.getData()));
+                $("#id_content").keypress();
+        }, 100);
+    }
 </script>""" % {
     'siteurl': CFG_SITE_URL
 }
@@ -433,49 +486,7 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
     if enabled and (editor_name == 'tex4web' or ckeditor_available):
         editor += '<input type="hidden" name="%(name)s" id="%(name)s"/>' % {'name' : name}
         if editor_name == 'tex4web':
-            # Tex4Web
-            editor += '''<div id="m-editor-resizer" class="ui-resizable"> 
-    <div class="m-editor-inner"> 
-        <div class="m-editor-block"> 
-            <div class="m-editor-block-options">Layout:
-                <a id="m-editor-layout-horizontal" href="#"
-                    class="text-button text-button-selected">horizontal</a> 
-                <a id="m-editor-layout-vertical" href="#"
-                    class="text-button">vertical</a> 
-            </div> 
-            <div class="m-editor-block-title"><span class="math">\TeX^4Web</span> editor (<a target="_blank" href="http://sciencewise.info/tex4web/help">help</a>):</div> 
-	            <div class="m-editor-block-resizer"> 
-	              <div class="m-editor-block-content m-editor-editor-content"> 
-	                <textarea id="id_content" rows="10" cols="40" name="%(name)s_t4w">%(content)s</textarea>
-	              </div> 
-	            </div> 
-       </div> 
-    </div> 
-    <div class="m-editor-inner"> 
-        <div class="m-editor-block"> 
-            <div class="m-editor-block-options">Live preview:
-                <a id="m-editor-live-on" href="#"
-                    class="text-button text-button-selected">on</a> 
-                <a id="m-editor-live-off" href="#"
-                    class="text-button">off</a> 
-                <a id="m-editor-live-update" href="#"
-                    class="text-button">update</a> 
-            </div> 
-            <div class="m-editor-block-title">Preview:</div> 
-            <div class="m-editor-block-resizer"> 
-              <div class="m-editor-block-content m-editor-preview-content"> 
-                <div></div> 
-              </div> 
-            </div> 
-        </div> 
-    </div> 
-<br style="clear: both;"> 
-<a href="http://sciencewise.info/"><img src="/tex4web/sciencewise.png"/></a> Provided by <a href="http://sciencewise.info/">ScienceWise</a><br/>
-<input class="adminbutton" type="button" value="Switch to HTML editor" onclick="$('#ck-container').show(); $('#m-editor-resizer').hide();">
-</div><div id="ck-container" style="display:none">''' % {
-                'name': name,
-                'content': content
-            }
+            editor += '''<div id="ck-container">'''
         #CKEditor
         # Prepare upload path settings
         file_upload_script = ''
@@ -496,7 +507,7 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
                  INVENIO_CKEDITOR_ALREADY_LOADED = 1;
              }
 	</script>
-         <input type="hidden" name="editor_type" id="%(id)seditortype" value="textarea" />
+         <input type="hidden" name="editor_type" id="%(id)s_ckeditortype" value="textarea" />
          <textarea id="%(id)s_ck" name="%(name)s_ck" style="width:%(width)s;height:%(height)s">%(textual_content)s</textarea>
          <textarea id="%(id)s_ckhtmlvalue" name="%(name)s_ckhtmlvalue" style="display:none;width:%(width)s;height:%(height)s">%(html_content)s</textarea>
          <script type="text/javascript">
@@ -548,7 +559,40 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
             'CFG_SITE_URL': CFG_SITE_URL,
             'ln': ln}
         if (editor_name == 'tex4web'):
-            editor += '''<input class="adminbutton" type="button" value="Switch to LaTeX editor" onclick="$('#m-editor-resizer').show(); $('#ck-container').hide();"></div>'''
+            editor += '''</div><div id="m-editor-resizer" class="ui-resizable"> 
+    <div class="m-editor-inner" style="display:none"> 
+        <div class="m-editor-block"> 
+	            <div class="m-editor-block-resizer"> 
+	              <div class="m-editor-block-content m-editor-editor-content"> 
+	                <textarea id="id_content" rows="10" cols="40" name="%(name)s_t4w">%(content)s</textarea>
+	              </div> 
+	            </div> 
+       </div> 
+    </div> 
+    <div class="m-editor-inner"> 
+        <div class="m-editor-block"> 
+            <div class="m-editor-block-options">Live preview:
+                <a id="m-editor-live-on" href="#"
+                    class="text-button text-button-selected">on</a> 
+                <a id="m-editor-live-off" href="#"
+                    class="text-button">off</a> 
+                <a id="m-editor-live-update" href="#"
+                    class="text-button">update</a> 
+            </div> 
+            <div class="m-editor-block-title">Preview (<a target="_blank" href="http://sciencewise.info/tex4web/help">help</a>):</div> 
+            <div class="m-editor-block-resizer"> 
+              <div class="m-editor-block-content m-editor-preview-content"> 
+                <div></div> 
+              </div> 
+            </div> 
+        </div> 
+    </div> 
+    <br style="clear: both;"> 
+    </div>
+        ''' % {
+                'name': name,
+                'content': content
+              }
     else:
         # CKedior is not installed
         textarea = '<textarea %(id)s name="%(name)s" style="width:%(width)s;height:%(height)s">%(content)s</textarea>' \
