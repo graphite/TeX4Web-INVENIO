@@ -1075,7 +1075,9 @@ class TeX4Web(_TeX4Web):
     commands = {
         # Out name
         '\\TeXForWeb': (_TeX4Web.cmd_replace,
-                        u'<span class="t4w-math math">\TeX^4Web</span>'),
+                        u'<span class="t4w-math math">'\
+                        u'<script type="math/tex">\TeX^4Web</script>'\
+                        u'</span>'),
         '\\usepackage':(_TeX4Web.cmd_package,),
         '\\protect':(_TeX4Web.cmd_replace, u''),
 
@@ -1146,14 +1148,22 @@ class TeX4Web(_TeX4Web):
 
         # Math
         '$':        (_TeX4Web.cmd_math, '',
-                        u'<span class="t4w-math math">%s</span>'),
+                        u'<span class="t4w-math math">'
+                        u'<script type="math/tex">%s</script>'
+                        u'</span>'),
         '\\(':      (_TeX4Web.cmd_math, '',
-                        u'<span class="t4w-math math">%s</span>'),
+                        u'<span class="t4w-math math">'
+                        u'<script type="math/tex">%s</script>'
+                        u'</span>'),
         '\\)':      (_TeX4Web.cmd_math, 'err', u''), # XXX
         '$$':       (_TeX4Web.cmd_math, '',
-                        u'\n<div class="t4w-displaymath math">%s</div>\n\n'),
+                        u'\n<div class="t4w-displaymath math">\n'
+                        u'  <script type="math/tex; mode=display">%s</script>\n'
+                        u'</div>\n\n'),
         '\\[':      (_TeX4Web.cmd_math, '',
-                        u'\n<div class="t4w-displaymath math">%s</div>\n\n'),
+                        u'\n<div class="t4w-displaymath math">\n'
+                        u'  <script type="math/tex; mode=display">%s</script>\n'
+                        u'</div>\n\n'),
         '\\]':      (_TeX4Web.cmd_math, 'err', u''), # XXX
 
         # Environments
@@ -1174,6 +1184,8 @@ class TeX4Web(_TeX4Web):
         '\\textsc': (_TeX4Web.cmd_group_tag, _span_tag('sc')),
         '\\emph':   (_TeX4Web.cmd_group_tag, _span_tag('em')),
         '\\textnormal': (_TeX4Web.cmd_group_tag, _span_tag('nf')),
+        '\\underline':   (_TeX4Web.cmd_group_tag, _span_tag('un')),
+        '\\sout':   (_TeX4Web.cmd_group_tag, _span_tag('st')),
 
         # Font declarations
         '\\mdseries': (_TeX4Web.cmd_group_otag, _span_tag('md')),
@@ -1327,36 +1339,51 @@ class TeX4Web(_TeX4Web):
                      u'<ul>%s</ul></div>'),
 
         # Math
-        'math':     (_TeX4Web.env_math, u'<span class="t4w-math math">%s</span>'),
+        'math':     (_TeX4Web.env_math, 
+                        u'<span class="t4w-math math">'
+                        u'<script type="math/tex">%s</script>'
+                        u'</span>'),
         'displaymath': (_TeX4Web.env_math,
-                     u'\n<div class="t4w-displaymath math">%s</div>\n\n'),
+                        u'\n<div class="t4w-displaymath math">\n'
+                        u'  <script type="math/tex; mode=display">%s</script>\n'
+                        u'</div>\n\n'),
         'equation': (_TeX4Web.env_nmath,
-                     u'<table class="t4w-equation">'
-                     u'  <tr>'
-                     u'    <td class="t4w-equation-math">%s</td>'
-                     u'    %s'
-                     u'  </tr>'
+                     u'<table class="t4w-equation">\n'
+                     u'  <tr>\n'
+                     u'    <td class="t4w-equation-math">%s</td>\n'
+                     u'    %s\n'
+                     u'  </tr>\n'
                      u'</table>',
-                     u'<div class="t4w-displaymath math">%s</div>',
+                     u'\n      <div class="t4w-displaymath math">\n'
+                     u'        <script type="math/tex; mode=display">%s</script>\n'
+                     u'      </div>\n    ',
                      u'<td class="t4w-equation-number" id="t4w-equation-%s">(%s)</td>'),
         'eqnarray': (_TeX4Web.env_nmath,
-                     u'<table class="t4w-eqnarray">'
-                     u'  <tr>'
-                     u'    <td class="t4w-eqnarray-math">%s</td>'
-                     u'    %s'
-                     u'  </tr>'
+                     u'<table class="t4w-eqnarray">\n'
+                     u'  <tr>\n'
+                     u'    <td class="t4w-eqnarray-math">%s</td>\n'
+                     u'    %s\n'
+                     u'  </tr>\n'
                      u'</table>',
-                     u'<div class="t4w-displaymath math">\\begin{array}{}%s\end{array}</div>',
+                     u'\n      <div class="t4w-displaymath math">\n'
+                     u'        <script type="math/tex; mode=display">\n'
+                     u'          \\begin{array}{}%s\end{array}\n'
+                     u'        </script>\n'
+                     u'      </div>\n    ',
                      u'<td class="t4w-eqnarray-number" id="t4w-equation-%s">(%s)</td>'
                      ),
         'align': (_TeX4Web.env_nmath,
-                     u'<table class="t4w-align">'
-                     u'  <tr>'
-                     u'    <td class="t4w-align-math">%s</td>'
-                     u'    %s'
-                     u'  </tr>'
+                     u'<table class="t4w-align">\n'
+                     u'  <tr>\n'
+                     u'    <td class="t4w-align-math">%s</td>\n'
+                     u'    %s\n'
+                     u'  </tr>\n'
                      u'</table>',
-                     u'<div class="t4w-displaymath math">\\begin{array}{}%s\end{array}</div>',
+                     u'\n      <div class="t4w-displaymath math">\n'
+                     u'        <script type="math/tex; mode=display">\n'
+                     u'           \\begin{array}{}%s\end{array}\n'
+                     u'        </script>\n'
+                     u'      </div>\n    ',
                      u'<td class="t4w-align-number" id="t4w-equation-%s">(%s)</td>'
                      ),
 

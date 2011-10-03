@@ -133,6 +133,8 @@ img.t4w-error {
 .t4w-sc { font-variant: small-caps; }
 .t4w-em { font-style: italic; }
 .t4w-nf { font-style: normal; font-variant: normal; }
+.t4w-st { text-decoration: line-through; }
+.t4w-un { text-decoration: underline; }
 
 /* Font sizes */
 .t4w-tiny       { font-size: xx-small; }
