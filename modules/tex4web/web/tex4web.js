@@ -121,7 +121,10 @@ function finalize_tex(offset, escape_type)
     while(offset < parts.length)
     {
         if (typeof(parts[offset]) == "undefined" || parts[offset] == "")
+        {
+            offset++;
             continue;
+        }
         if (parts[offset][0] == '<')
         {
             if (parts[offset][1] == '/')
