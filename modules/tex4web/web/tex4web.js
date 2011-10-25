@@ -120,7 +120,7 @@ function finalize_tex(offset, escape_type)
     var final_str = '';
     while(offset < parts.length)
     {
-        if (typeof(parts[offset]) == "undefined")
+        if (typeof(parts[offset]) == "undefined" && parts[offset] != "")
             continue;
         if (parts[offset][0] == '<')
         {
