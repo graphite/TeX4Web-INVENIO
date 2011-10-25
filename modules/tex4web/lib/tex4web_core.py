@@ -353,7 +353,7 @@ class _TeX4Web(object):
         # A hack to restore -- and --- in math mode
         result = result.replace(u'\u2013', u'--').replace(u'\u2014', u'---')
 
-        return _format(tag, escape(result))
+        return _format(tag, result)
 
     def cmd_newline(self, cmd, tag, tag_a, stab_t, etab_t):
         if cmd == '\\\\':
@@ -1094,6 +1094,50 @@ class TeX4Web(_TeX4Web):
         '\\:':      (_TeX4Web.cmd_replace, u'\u2005'),
         '\\,':      (_TeX4Web.cmd_replace, u'\u2006'),
         '\\thinspace':  (_TeX4Web.cmd_replace, u'\u200A'),
+
+        # Special chars from CK Editor
+        '\\dots': (_TeX4Web.cmd_replace, '&hellip;'),
+        '\\texteuro': (_TeX4Web.cmd_replace, '&euro;'),
+        '\\textquoteleft': (_TeX4Web.cmd_replace, '&lsquo;'),
+        '\\textquoteright': (_TeX4Web.cmd_replace, '&rsquo;'),
+        '\\textquotedblleft': (_TeX4Web.cmd_replace, '&ldquo;'),
+        '\\textquotedblright': (_TeX4Web.cmd_replace, '&rdquo;'),
+        '!`': (_TeX4Web.cmd_replace, '&iexcl;'),
+        '\\textcent': (_TeX4Web.cmd_replace, '&cent;'),
+        '\\pounds': (_TeX4Web.cmd_replace, '&pound;'),
+        '\\textcurrency': (_TeX4Web.cmd_replace, '&curren;'),
+        '\\textyen': (_TeX4Web.cmd_replace, '&yen;'),
+        '\\splitvert': (_TeX4Web.cmd_replace, '&brvbar;'),
+        '\\S': (_TeX4Web.cmd_replace, '&sect;'),
+        '\\copyright': (_TeX4Web.cmd_replace, '&copy;'),
+        '\\textordfeminine': (_TeX4Web.cmd_replace, '&ordf;'),
+        '\\textregistered': (_TeX4Web.cmd_replace, '&reg;'),
+        '\\cdot': (_TeX4Web.cmd_replace, '&middot;'),
+        '\\textordmasculine': (_TeX4Web.cmd_replace, '&ordm;'),
+        '?`': (_TeX4Web.cmd_replace, '&iquest;'),
+        '\\DH': (_TeX4Web.cmd_replace, '&ETH;'),
+        '\\Thorn': (_TeX4Web.cmd_replace, '&THORN;'),
+        '\\dh': (_TeX4Web.cmd_replace, '&eth;'),
+        '\\thorn': (_TeX4Web.cmd_replace, '&thorn;'),
+        '\\textquotestraightbase': (_TeX4Web.cmd_replace, '&sbquo;'),
+        '\\textquotestraightdblbase': (_TeX4Web.cmd_replace, '&bdquo;'),
+        '\\texttrademark': (_TeX4Web.cmd_replace, '&trade;'),
+        '\\blackdiamond': (_TeX4Web.cmd_replace, '&diams;'),
+        '\\prime': (_TeX4Web.cmd_replace, '&prime;'),
+        '\\second': (_TeX4Web.cmd_replace, '&Prime;'),
+        '\\diagup': (_TeX4Web.cmd_replace, '&frasl;'),
+        '\\leftarrow': (_TeX4Web.cmd_replace, '&larr;'),
+        '\\uparrow': (_TeX4Web.cmd_replace, '&uarr;'),
+        '\\rightarrow': (_TeX4Web.cmd_replace, '&rarr;'),
+        '\\downarrow': (_TeX4Web.cmd_replace, '&darr;'),
+        '\\leftrightarrow': (_TeX4Web.cmd_replace, '&harr;'),
+        '\\dlsh': (_TeX4Web.cmd_replace, '&crarr;'),
+        '\\Leftarrow': (_TeX4Web.cmd_replace, '&lArr;'),
+        '\\Uparrow': (_TeX4Web.cmd_replace, '&uArr;'),
+        '\\Rightarrow': (_TeX4Web.cmd_replace, '&rArr;'),
+        '\\Downarrow': (_TeX4Web.cmd_replace, '&dArr;'),
+        '\\Leftrightarrow': (_TeX4Web.cmd_replace, '&hArr;'),
+        '\\textasteriskcentered': (_TeX4Web.cmd_replace, '&lowast;'),
 
         '~':        (_TeX4Web.cmd_replace, u'&nbsp;'),
 

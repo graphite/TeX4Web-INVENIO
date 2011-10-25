@@ -368,7 +368,7 @@ class Template:
         if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
            and (CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web'):
             image_base = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/' + str(recID) + '/comments/attachments/get/' + str(com_id) + '/'
-            final_body = TeX4WebSW(image_base).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape')
+            final_body = TeX4WebSW(image_base).parse_document(body.decode('utf-8')).encode('utf-8')
         else:
             final_body = email_quoted_txt2html(body)
         title = _('%(x_name)s wrote on %(x_date)s:') % {'x_name': nickname,
@@ -1195,7 +1195,7 @@ class Template:
                   <span class="reportabuse">%(note)s</span>
                   <div class="submit-area">
                       %(subscribe_to_discussion)s<br />
-                      <input class="adminbutton" type="submit" value="Add comment" onclick='user_must_confirm_before_leaving_page = false; t4w = $("#m-editor-resizer"); ck = $("#ck-container"); val = $("#msg").val(); if (t4w.length != 0) {val=$("#id_content").val(); $("#msg_ckeditortype").val("tex4web"); } else if (ck.length != 0) {val = ck_editor.getData()}; $("#msg").val(val); return true;'/>
+                      <input class="adminbutton" type="submit" value="Add comment" onclick='user_must_confirm_before_leaving_page = false; t4w = $("#m-editor-resizer"); ck = $("#ck-container"); val = $("#msg").val(); if (t4w.length != 0) {val=$("#id_content").val(); $("msg_ckeditortype").val("tex4web"); } else if (ck.length != 0) {val = ck_editor.getData()}; $("#msg").val(val); return true;'/>
                       %(reply_to)s
                   </div>
                 """ % {'note': note,
@@ -2203,7 +2203,7 @@ class Template:
 
             window.onbeforeunload = confirmExit;
             function confirmExit() {
-                var editor_type_field = document.getElementById('%(name)s_ckeditortype');
+                var editor_type_field = document.getElementById('%(name)seditortype');
                 if (editor_type_field && editor_type_field.value == 'ckeditor') {
                     var oEditor = CKEDITOR.instances.%(name)s;
                     if (user_must_confirm_before_leaving_page && oEditor.checkDirty()) {
