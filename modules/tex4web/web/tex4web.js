@@ -135,7 +135,7 @@ function finalize_tex(offset, escape_type)
 
             var result = open_tag(parts[offset].substr(1), parts[offset+1]);
             final_str += result[0];
-            if (typeof(parts[offset+2]) != "undefined")
+            if (typeof(parts[offset+2]) != "undefined" && parts[offset+2] != "")
             {
                 final_str += close_tag(parts[offset].substr(1));
                 offset += 3;
