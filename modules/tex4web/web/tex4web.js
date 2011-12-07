@@ -18,13 +18,13 @@ function strReplace(str, replace, by)
 function html_to_tex(str)
 {
     //This function was first added for INVENIO
-    var allowed_tags = '<a><br><ul><ol><li><hr><strong><b><em><i><u><strike><sup><sub><blockqoute><img>';
+    var allowed_tags = '<a><ul><ol><li><hr><strong><b><em><i><u><strike><sup><sub><blockqoute><img>';
     var tags_re = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
     str = str.replace(tags_re, function($0, $1){
         return allowed_tags.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
     });
     str = '<html>' + str + '</html>';
-    str = strReplace(str, Array('<br />', '<ul>', '</ul>', '<ol>', '</ol>', '<li>', '</li>', '<hr />'), Array("\n", '\\begin{itemize}', '\\end{itemize}', '\\begin{enumerate}', '\\end{enumerate}', '\\item', '', '\\rule{width}{thickness}'));
+    str = strReplace(str, Array('<br />', '<ul>', '</ul>', '<ol>', '</ol>', '<li>', '</li>', '<hr />'), Array("\\\\", '\\begin{itemize}', '\\end{itemize}', '\\begin{enumerate}', '\\end{enumerate}', '\\item', '', '\\rule{width}{thickness}'));
     var tag = /(<\/?[a-z][a-z0-9]*)\b(?:[^>]*((?:href|src)="[^"]*"))?[^>]*?(\/)?>/;
     parts = str.split(tag);
     var result = finalize_tex(0, 0);
@@ -331,7 +331,7 @@ $(function() {
     {
         return;
     }
-    if (ck_editor.getData().indexOf("%% tex4web comment") != -1)
+    if ($('#id_content').val() == '' || $('#id_content').val().indexOf("%% tex4web comment") != -1)
     {
         $('#ck-container').toggle();
         $('#m-editor-resizer').toggle();

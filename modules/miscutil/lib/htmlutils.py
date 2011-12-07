@@ -505,7 +505,8 @@ def get_html_text_editor(name, id=None, content='', textual_content=None, width=
             'CFG_SITE_URL': CFG_SITE_URL,
             'ln': ln}
         if (editor_name == 'tex4web'):
-            editor += '''<input class="adminbutton" type="button" value="Switch to TeX4Web editor" onclick="if (ck_editor.getData() != '' && !confirm('You have already started to write the text. We will try to convert HTML to TeX, but you can lose some data. Convert?')) {return false;} $('#id_content').val(html_to_tex(ck_editor.getData())); make_preview(); $('#ck-container').toggle(); $('#m-editor-resizer').toggle(); $('#%(id)s_ckeditortype').val('tex4web');" />'''
+            editor += '''<input class="adminbutton" type="button" value="Switch to LaTeX editor" onclick="if (ck_editor.getData() != '' && !confirm('You have already started to write the text. We will try to convert HTML to TeX, but you can lose some data. Convert?')) {return false;} $('#id_content').val(html_to_tex(ck_editor.getData())); make_preview(); $('#ck-container').toggle(); $('#m-editor-resizer').toggle(); $('#%(id)s_ckeditortype').val('tex4web');" />''' % \
+           {'id': id or name}
         editor += '</div>'
         if (editor_name == 'tex4web'):
             editor += '''<div id="m-editor-resizer">
