@@ -9,12 +9,38 @@
 ## Invenio is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.  
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Invenio; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-SUBDIRS = bibauthorid bibcatalog bibcheck bibcirculation bibclassify bibconvert bibedit bibexport bibharvest bibknowledge bibmatch bibmerge bibsched bibsword bibindex bibrank bibupload bibformat elmsubmit miscutil webstyle websession webhelp webbasket webalert websearch websubmit webaccess webmessage webstat webcomment webjournal tex4web codemirror
+webdir = $(localstatedir)/www/codemirror
 
-CLEANFILES = *~
+web_DATA = codemirror.js \
+           mirrorframe.js \
+           parsehtmlmixed.js \
+           parsesparql.js \
+           stringstream.js \
+           tokenize.js \
+           util.js \
+           editor.js \
+           parsecss.js \
+           parsejavascript.js \
+           parsexml.js \
+           styles \
+           undo.js \
+           highlight.js \
+           parsedummy.js \
+           parselatex.js \
+           select.js \
+           tokenizejavascript.js \
+           unittests.js
+
+styledir = $(localstatedir)/www/codemirror/styles
+
+style_DATA = latexcolors.css
+
+EXTRA_DIST = $(web_DATA) $(style_DATA)
+
+CLEANFILES = *~ *.tmp

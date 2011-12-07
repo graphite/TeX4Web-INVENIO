@@ -130,8 +130,7 @@ def convert_conf_option(option_name, option_value):
                        'CFG_WEBCOMMENT_EMAIL_REPLIES_TO',
                        'CFG_WEBCOMMENT_RESTRICTION_DATAFIELD',
                        'CFG_WEBCOMMENT_ROUND_DATAFIELD',
-                       'CFG_BIBUPLOAD_FFT_ALLOWED_EXTERNAL_URLS',
-                       'CFG_BIBSCHED_NODE_TASKS']:
+                       'CFG_BIBUPLOAD_FFT_ALLOWED_EXTERNAL_URLS']:
         option_value = option_value[1:-1]
 
     ## 3cbis) very special cases: dicts with backward compatible string
@@ -892,6 +891,8 @@ WSGIRestrictStdout Off
         Alias /MathJax/ %(webdir)s/MathJax/
         Alias /jsCalendar/ %(webdir)s/jsCalendar/
         Alias /ckeditor/ %(webdir)s/ckeditor/
+        Alias /tex4web/ %(webdir)s/tex4web/
+        Alias /codemirror/ %(webdir)s/codemirror/
         AliasMatch /sitemap-(.*) %(webdir)s/sitemap-$1
         Alias /robots.txt %(webdir)s/robots.txt
         Alias /favicon.ico %(webdir)s/favicon.ico

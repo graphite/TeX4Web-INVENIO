@@ -26,6 +26,10 @@
     margin: 0 0 0.2em 0;
 }
 
+#m-editor-resizer {
+    display:none;
+}
+
 #m-editor-resizer .ui-resizable-s {
     background: #ffffff url(/tex4web/resizer_200.png) no-repeat scroll center 0;
 }

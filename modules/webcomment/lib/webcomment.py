@@ -1608,7 +1608,7 @@ def perform_request_add_comment_or_remark(recID=0,
                         # 1 For CkEditor input
                         msg += '\n\n'
                         msg += comment[3]
-                        if CFG_WEBCOMMENT_RICH_TEXT_EDITOR != 'tex4web':
+                        if "%% tex4web comment" not in msg:
                             msg = email_quote_txt(text=msg)
                             # Now that we have a text-quoted version, transform into
                             # something that CkEditor likes, using <blockquote> that

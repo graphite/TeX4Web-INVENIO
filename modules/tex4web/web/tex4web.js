@@ -33,7 +33,6 @@ function html_to_tex(str)
     str = str.replace(/##\$\$##/g, "");
     str = str.replace(/##\$/g, "$");
     str = str.replace(/\$##/g, "$");
-    str = str.replace(/\n\n/g, "\n");
     return str;
 }
 
@@ -312,10 +311,10 @@ $(document).ready(function() {
         $('#id_content_form').submit();
     });
 
-    $('#m-editor-layout-vertical').click(function() {
-        this.blur(); layout_set_vertical(); return false; });
     $('#m-editor-layout-horizontal').click(function() {
         this.blur(); layout_set_horizontal(); return false; });
+    $('#m-editor-layout-vertical').click(function() {
+        this.blur(); layout_set_vertical(); return false; });
 
     $('#m-editor-live-on' ).click(function() {
         this.blur(); live_preview_enable(); return false; });
@@ -325,4 +324,17 @@ $(document).ready(function() {
         this.blur(); make_preview(); return false; });
 
     _setup_resizer_h();
+});
+
+$(function() {
+    if (typeof(ck_editor) == "undefined")
+    {
+        return;
+    }
+    if (ck_editor.getData().indexOf("%% tex4web comment") != -1)
+    {
+        $('#ck-container').toggle();
+        $('#m-editor-resizer').toggle();
+        $('#msg_ckeditortype').val('tex4web');
+    }
 });

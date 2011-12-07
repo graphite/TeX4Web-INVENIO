@@ -9,12 +9,28 @@
 ## Invenio is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.  
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Invenio; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-SUBDIRS = bibauthorid bibcatalog bibcheck bibcirculation bibclassify bibconvert bibedit bibexport bibharvest bibknowledge bibmatch bibmerge bibsched bibsword bibindex bibrank bibupload bibformat elmsubmit miscutil webstyle websession webhelp webbasket webalert websearch websubmit webaccess webmessage webstat webcomment webjournal tex4web codemirror
+webdir = $(localstatedir)/www/tex4web
 
-CLEANFILES = *~
+web_DATA = bootstrap.js \
+           tex4web.js \
+           tex4web_sw.mozilla.cache.html \
+           tex4web_sw.opera.cache.html \
+           error.js \
+           resizer_200.png \
+           tex4web_sw.html \
+           tex4web_sw.nocache.html \
+           tex4web_sw.safari.cache.html \
+           error.png \
+           tex4web.css \
+           tex4web_sw.ie6.cache.html \
+           tex4web_sw.oldmoz.cache.html
+
+EXTRA_DIST = $(web_DATA)
+
+CLEANFILES = *~ *.tmp

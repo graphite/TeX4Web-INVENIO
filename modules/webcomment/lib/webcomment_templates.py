@@ -365,11 +365,8 @@ class Template:
         if attached_files is None:
             attached_files = []
         out = ''
-        if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
-           and (CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web'):
-            image_base = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/' + str(recID) + '/comments/attachments/get/' + str(com_id) + '/'
-            final_body = TeX4WebSW(image_base).parse_document(body.decode('utf-8')).encode('utf-8')
-        else:
+        if not CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
+           or not body.startswith("%% tex4web comment"):
             final_body = email_quoted_txt2html(body)
         title = _('%(x_name)s wrote on %(x_date)s:') % {'x_name': nickname,
                                                         'x_date': '<i>' + date_creation + '</i>'}
@@ -430,8 +427,25 @@ class Template:
                 attached_files_html += create_html_link(urlbase=fileurl, urlargd={},
                                                         link_label=cgi.escape(filename)) + '<br />'
             attached_files_html += '</div>'
-
-        out += """
+        if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
+           and body.startswith('%% tex4web comment'):
+            image_base = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/' + str(recID) + '/comments/attachments/get/' + str(com_id) + '/'
+            _body = TeX4WebSW(image_base).parse_document(body.decode('utf-8')).encode('utf-8')
+            out += """
+<div style="margin-bottom:20px;background:#F9F9F9;border:1px solid #DDD">%(title)s<br />
+<blockquote>
+%(body)s
+</blockquote>
+<br />
+%(attached_files_html)s
+<div style="float:right">%(links)s</div>
+</div>""" % \
+            {'title'         : '<div style="background-color:#EEE;padding:2px;"><img src="%s/img/user-icon-1-24x24.gif" alt="" />&nbsp;%s</div>' % (CFG_SITE_URL, title),
+             'body'          : _body,
+             'links'         : links,
+             'attached_files_html': attached_files_html}
+        else:
+            out += """
 <div style="margin-bottom:20px;background:#F9F9F9;border:1px solid #DDD">%(title)s<br />
     <blockquote>
 %(body)s
@@ -440,10 +454,10 @@ class Template:
 %(attached_files_html)s
 <div style="float:right">%(links)s</div>
 </div>""" % \
-                {'title'         : '<div style="background-color:#EEE;padding:2px;"><img src="%s/img/user-icon-1-24x24.gif" alt="" />&nbsp;%s</div>' % (CFG_SITE_URL, title),
-                 'body'          : final_body,
-                 'links'         : links,
-                 'attached_files_html': attached_files_html}
+            {'title'         : '<div style="background-color:#EEE;padding:2px;"><img src="%s/img/user-icon-1-24x24.gif" alt="" />&nbsp;%s</div>' % (CFG_SITE_URL, title),
+             'body'          : final_body,
+             'links'         : links,
+             'attached_files_html': attached_files_html}
         return out
 
     def tmpl_get_comment_with_ranking(self, req, ln, nickname, comment_uid, date_creation, body, status, nb_reports, nb_votes_total, nb_votes_yes, star_score, title, report_link=None, delete_links=None, undelete_link=None, unreport_link=None, recID=-1):
@@ -485,11 +499,8 @@ class Template:
         _body = ''
         if body != '':
             if CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
-               and CFG_WEBCOMMENT_RICH_TEXT_EDITOR == 'tex4web':
-                _body = '''
-      <blockquote>
-%s
-      </blockquote>''' % TeX4WebSW(None).parse_document(body.decode('raw_unicode_escape')).encode('raw_unicode_escape') 
+               and body.startswith('%% tex4web comment'):
+                _body = TeX4WebSW(None).parse_document(body.decode('utf8')).encode('utf8') 
             else:
                 _body = '''
       <blockquote>
@@ -1195,7 +1206,7 @@ class Template:
                   <span class="reportabuse">%(note)s</span>
                   <div class="submit-area">
                       %(subscribe_to_discussion)s<br />
-                      <input class="adminbutton" type="submit" value="Add comment" onclick='user_must_confirm_before_leaving_page = false; t4w = $("#m-editor-resizer"); ck = $("#ck-container"); val = $("#msg").val(); if (t4w.length != 0) {val="\\\\usepackage{textcomp}\\n\\\\usepackage{ascii}\\n\\\\usepackage{wasysym}\\n\\\\usepackage{mathabx}\\n"+$("#id_content").val(); $("#msg_ckeditortype").val("tex4web"); } else if (ck.length != 0) {val = ck_editor.getData()}; $("#msg").val(val); return true;'/>
+                      <input class="adminbutton" type="submit" value="Add comment" onclick="user_must_confirm_before_leaving_page = false; if ($('#m-editor-resizer').is(':visible')) { $('#msg').val('%%%% tex4web comment\\n' + $('#id_content').val()); $('#msg_ckeditortype').val('tex4web'); } else { $('#msg').val(ck_editor.getData()); $('#msg_ckeditortype').val('ckeditor'); } return true;"/>
                       %(reply_to)s
                   </div>
                 """ % {'note': note,
