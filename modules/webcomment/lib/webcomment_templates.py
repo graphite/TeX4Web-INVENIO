@@ -368,6 +368,8 @@ class Template:
         if not CFG_WEBCOMMENT_USE_RICH_TEXT_EDITOR \
            or not body.startswith("%% tex4web comment"):
             final_body = email_quoted_txt2html(body)
+        else:
+            final_body = body
         title = _('%(x_name)s wrote on %(x_date)s:') % {'x_name': nickname,
                                                         'x_date': '<i>' + date_creation + '</i>'}
         title += '<a name=%s></a>' % com_id
